@@ -1,4 +1,4 @@
-name: Deploy Lambda API
+name: Deploy
 
 on:
   push:
