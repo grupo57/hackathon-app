@@ -39,7 +39,6 @@ public class ArquivoService {
     private final UploadArquivoUseCase uploadArquivoUseCase;
     private final DownloadArquivoUseCase downloadArquivoUseCase;
     private final ListarArquivosUseCase listarArquivosUseCase;
-//    private String queueUrl = "https://sqs.us-east-1.amazonaws.com/744592382994/hackathon-video-processado";
 
     public ArquivoService(ArquivoGateway arquivoGateway, @Qualifier("s3") Storage storage) {
         this.arquivoGateway = arquivoGateway;
@@ -75,7 +74,7 @@ public class ArquivoService {
 
     @SqsListener(value = "${cloud.aws.sqs.video-erro-queue-name}")
     public void videoErroHandleMessage(@Payload Message message) {
-        processarSucesso(message);
+        processarErro(message);
     }
 
 
