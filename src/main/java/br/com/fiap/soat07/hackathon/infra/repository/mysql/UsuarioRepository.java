@@ -47,6 +47,28 @@ public class UsuarioRepository implements UsuarioGateway {
     }
 
     @Override
+    public Optional<Usuario> get(final Long id) {
+        if (id == null)
+            throw new IllegalArgumentException("Obrigatório código");
+
+        String sql = """
+            SELECT u.*
+            FROM hackathon.usuario u
+            WHERE u.id = :id
+            """;
+        Query query = entityManager.createNativeQuery(sql, Tuple.class);
+        query.setParameter("id", id);
+        try {
+            return Stream.of(query.getSingleResult())
+                    .map(i -> (Tuple)i)
+                    .map(this::mapearParaDTO)
+                    .findFirst();
+        } catch (NoResultException e) {
+            throw new UsuarioNaoEncontradoException(id.toString());
+        }
+    }
+
+    @Override
     public boolean validar(final UUID codigo) {
         if (codigo == null)
             throw new LoginInvalidoException();

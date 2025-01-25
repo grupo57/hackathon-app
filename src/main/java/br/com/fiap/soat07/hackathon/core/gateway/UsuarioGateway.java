@@ -19,4 +19,9 @@ public interface UsuarioGateway {
      */
     boolean validar(UUID codigo);
 
+    /**
+     * Recupera o usuário
+     * @param id chave primária
+     */
+    Optional<Usuario> get(Long id);
 }
