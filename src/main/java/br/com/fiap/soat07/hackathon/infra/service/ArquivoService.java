@@ -1,8 +1,10 @@
 package br.com.fiap.soat07.hackathon.infra.service;
 
 import br.com.fiap.soat07.hackathon.core.domain.entity.*;
+import br.com.fiap.soat07.hackathon.core.exception.CodigoDoArquivoInvalido;
 import br.com.fiap.soat07.hackathon.core.gateway.ArquivoGateway;
 import br.com.fiap.soat07.hackathon.core.gateway.Storage;
+import br.com.fiap.soat07.hackathon.core.gateway.UsuarioGateway;
 import br.com.fiap.soat07.hackathon.core.usecase.DownloadArquivoUseCase;
 import br.com.fiap.soat07.hackathon.core.usecase.ListarArquivosUseCase;
 import br.com.fiap.soat07.hackathon.core.usecase.UploadArquivoUseCase;
@@ -39,12 +41,16 @@ public class ArquivoService {
     private final UploadArquivoUseCase uploadArquivoUseCase;
     private final DownloadArquivoUseCase downloadArquivoUseCase;
     private final ListarArquivosUseCase listarArquivosUseCase;
+    private final UsuarioGateway usuarioGateway;
+    private final NotificacaoService notificacaoService;
 
-    public ArquivoService(ArquivoGateway arquivoGateway, @Qualifier("s3") Storage storage) {
+    public ArquivoService(ArquivoGateway arquivoGateway, @Qualifier("s3") Storage storage, UsuarioGateway usuarioGateway, NotificacaoService notificacaoService) {
         this.arquivoGateway = arquivoGateway;
         this.uploadArquivoUseCase = new UploadArquivoUseCase(storage, arquivoGateway);
         this.downloadArquivoUseCase = new DownloadArquivoUseCase(storage, arquivoGateway);
         this.listarArquivosUseCase = new ListarArquivosUseCase(storage, arquivoGateway);
+        this.usuarioGateway = usuarioGateway;
+        this.notificacaoService = notificacaoService;
     }
 
 
@@ -117,7 +123,14 @@ public class ArquivoService {
         if (id == null)
             throw new IllegalArgumentException("Obrigatório informar o código");
 
-        Optional<MetadadosDoArquivo> metadados = arquivoGateway.get(UUID.fromString(id));
+        UUID uuid = null;
+        try {
+            uuid = UUID.fromString(id);
+        } catch (IllegalArgumentException ex) {
+            throw new CodigoDoArquivoInvalido(id);
+        }
+
+        Optional<MetadadosDoArquivo> metadados = arquivoGateway.get(uuid);
         if (metadados.isEmpty())
             throw new IllegalArgumentException("Arquivo não encontrado: "+id);
 
@@ -129,7 +142,7 @@ public class ArquivoService {
             throw new IllegalArgumentException("Obrigatório informar o código");
         String body = message.body();
         String[] parts = body.split(";");
-        if (parts.length != 2)
+        if (parts.length < 3)
             throw new IllegalArgumentException("Mensagem em formato inválido");
 
         if (parts[0] == null || parts[0].lastIndexOf('.') == -1)
@@ -138,20 +151,30 @@ public class ArquivoService {
         if (id == null)
             throw new IllegalArgumentException("Id está em formato inválido");
 
-        processarErro(id, parts[1]);
+        processarErro(id, LocalDateTime.parse(parts[1], FORMATTER), LocalDateTime.parse(parts[2], FORMATTER), parts.length == 3 ? null : parts[3]);
     }
-    private void processarErro(String id, String mensagem) {
+    private void processarErro(String id, LocalDateTime inicio, LocalDateTime termino, String mensagem) {
         if (id == null)
             throw new IllegalArgumentException("Obrigatório informar o código");
 
-        Optional<MetadadosDoArquivo> metadados = arquivoGateway.get(UUID.fromString(id));
+        UUID uuid = null;
+        try {
+            uuid = UUID.fromString(id);
+        } catch (IllegalArgumentException ex) {
+            throw new CodigoDoArquivoInvalido(id);
+        }
+
+        Optional<MetadadosDoArquivo> metadados = arquivoGateway.get(uuid);
         if (metadados.isEmpty())
             throw new IllegalArgumentException("Arquivo não encontrado: "+id);
 
+        Optional<Usuario> usuario = usuarioGateway.get(metadados.get().getIdUsuario());
+        if (usuario.isEmpty())
+            throw new IllegalArgumentException("Usuário não encontrado: "+metadados.get().getIdUsuario());
 
+        arquivoGateway.defineQueArquivoFoiProcessadoComErro(metadados.get(), inicio, termino, mensagem);
         System.err.println("ERRO: "+metadados.get().getIdUsuario());
-
-//        arquivoGateway.defineQueArquivoFoiProcessado(metadados.get(), inicio, termino);
+        notificacaoService.notificarErro(usuario.get(), metadados.get());
     }
 
     private void deleteMessage(String queue, Message message) {
