@@ -82,7 +82,7 @@ public class UploadController {
 
     @GetMapping(value = "/read", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public ResponseEntity<?> read(){
-        arquivoService.readMessages();
+//        arquivoService.readMessages(sqsConfig.);
         return ResponseEntity.ok("mensagens lidas");
     }
 }

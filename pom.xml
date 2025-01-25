@@ -11,7 +11,7 @@
 
 	<groupId>br.com.fiap.soat07.hackathon</groupId>
 	<artifactId>video-api</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<name>hackathon</name>
 	<description>Extrator de frames de vídeos - fiap - fase 5</description>
 

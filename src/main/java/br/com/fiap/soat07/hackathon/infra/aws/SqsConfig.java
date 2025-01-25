@@ -20,11 +20,25 @@ public class SqsConfig {
     @Value("${cloud.aws.sqs.region}")
     private String region;
 
+    @Value("${cloud.aws.sqs.video-processado-queue-name}")
+    private String videoProcessadoQueueName;
+
+    @Value("${cloud.aws.sqs.video-processado-queue-name}")
+    private String videoErroQueueName;
+
+
     @Bean(name = "sqsRegion")
     public Region sqsRegion() {
         return Region.of(region);
     }
 
+    public String getVideoProcessadoQueueName() {
+        return videoProcessadoQueueName;
+    }
+
+    public String getVideoErroQueueName() {
+        return videoErroQueueName;
+    }
 
     @Bean
     public SqsClient sqsClient() {
