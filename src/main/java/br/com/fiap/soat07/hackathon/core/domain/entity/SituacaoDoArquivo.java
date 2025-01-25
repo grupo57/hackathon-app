@@ -7,7 +7,8 @@ public enum SituacaoDoArquivo {
     CARREGADO,
     EM_PROCESSAMENTO,
     PROCESSADO,
-    BAIXADO;
+    BAIXADO,
+    ERRO;
 
 
     public boolean isProcessado() {
@@ -31,7 +32,7 @@ public enum SituacaoDoArquivo {
     }
 
     public boolean isPossoDefinirComoProcessado() {
-        return !(PROCESSADO.equals(this) || BAIXADO.equals(this));
+        return !(PROCESSADO.equals(this) || BAIXADO.equals(this) || ERRO.equals(this));
     }
     public boolean isPossoFazerDownload() {
         return (PROCESSADO.equals(this) || BAIXADO.equals(this));
