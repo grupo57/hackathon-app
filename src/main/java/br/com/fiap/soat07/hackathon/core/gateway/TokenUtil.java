@@ -2,11 +2,6 @@ package br.com.fiap.soat07.hackathon.core.gateway;
 
 import br.com.fiap.soat07.hackathon.core.domain.entity.Usuario;
 
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 public interface TokenUtil {
 
     /**
