@@ -138,6 +138,33 @@ public class ArquivoRepository implements ArquivoGateway {
         }
     }
 
+    @Override
+    public MetadadosDoArquivo defineQueArquivoFoiProcessadoComErro(MetadadosDoArquivo metadadosDoArquivo, LocalDateTime inicio, LocalDateTime termino, String mensagem) {
+        String sql = """
+            SELECT a.*
+            FROM hackathon.arquivo_metadados a
+            WHERE a.id = :ID
+            """;
+        Query query = entityManager.createNativeQuery(sql, MetadadosDoArquivoModel.class);
+        query.setParameter("ID", metadadosDoArquivo.getId().toString());
+        try {
+            MetadadosDoArquivoModel model = Optional.of((MetadadosDoArquivoModel) query.getSingleResult())
+                    .orElseThrow(() -> new ErroAoRecuperarArquivoException(metadadosDoArquivo.getId().toString()));
+            if (model.getSituacao().isPossoDefinirComoProcessado()) {
+                model.setSituacao(SituacaoDoArquivo.ERRO);
+                model.setDataProcessamentoInicio(inicio);
+                model.setDataProcessamentoTermino(termino);
+
+                entityManager.merge(model);
+                entityManager.flush();
+            }
+
+            return new MetadadosDoArquivo(model.getId(), model.getIdUsuario(), model.getNome(), model.getTamanhoEmBytes(), model.getHash(), model.getTipo(), model.getSituacao());
+        } catch (NoResultException e) {
+            throw new ArquivoNaoEncontradoException(metadadosDoArquivo.getId().toString());
+        }
+    }
+
     private MetadadosDoArquivo mapearParaDTO(Tuple tuple) {
         UUID id = UUID.fromString(tuple.get("id", String.class));
         Long idUsuario = tuple.get("id_usuario", Long.class);

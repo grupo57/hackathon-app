@@ -21,4 +21,5 @@ public interface ArquivoGateway {
 
     MetadadosDoArquivo defineQueArquivoFoiProcessado(MetadadosDoArquivo metadadosDoArquivo, LocalDateTime inicio, LocalDateTime termino);
 
+    MetadadosDoArquivo defineQueArquivoFoiProcessadoComErro(MetadadosDoArquivo metadadosDoArquivo, LocalDateTime inicio, LocalDateTime termino, String mensagem);
 }
