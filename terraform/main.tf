@@ -12,7 +12,7 @@ resource "aws_lambda_function" "api_lambda" {
 
   s3_bucket        = aws_s3_bucket.lambda_deploy.id
   s3_key           = "lambda-function.jar"
-  source_code_hash = filebase64sha256("target/lambda-function.jar")
+  source_code_hash = filebase64sha256("../target/lambda-function.jar")
 
   environment {
     variables = {
