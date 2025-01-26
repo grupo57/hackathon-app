@@ -16,6 +16,10 @@ resource "aws_lambda_function" "api_lambda" {
   }
 }
 
+resource "random_id" "role_suffix" {
+  byte_length = 4  # Tamanho do sufixo aleatório (4 bytes)
+}
+
 # IAM Role para a Lambda
 resource "aws_iam_role" "lambda_exec" {
   name = "lambda_exec_role_${random_id.role_suffix.hex}"
