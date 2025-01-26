@@ -84,25 +84,6 @@ public class ArquivoService {
     }
 
 
-//    public void readMessages(String queue) {
-//        ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
-//                .queueUrl(queue)
-//                .maxNumberOfMessages(10)  // Número máximo de mensagens para receber por vez
-//                .waitTimeSeconds(20)  // Tempo máximo de espera (long polling)
-//                .build();
-//
-//        ReceiveMessageResponse receiveMessageResponse = sqsClient.receiveMessage(receiveMessageRequest);
-//        List<Message> messages = receiveMessageResponse.messages();
-//
-//        for (Message message : messages) {
-//            System.out.println("Mensagem recebida: " + message.body());
-//            processar(message);
-//
-//            // Após processar a mensagem, exclua-a para evitar que seja lida novamente
-//            deleteMessage(queue, message);
-//        }
-//    }
-
     private void processarSucesso(Message message) {
         if (message == null)
             throw new IllegalArgumentException("Obrigatório informar o código");
