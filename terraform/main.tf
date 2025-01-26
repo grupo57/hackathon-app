@@ -1,7 +1,6 @@
 # S3 Bucket para armazenar o código da Lambda
 resource "aws_s3_bucket" "lambda_deploy" {
   bucket = var.s3_bucket_name
-  acl    = "private"
 }
 
 # Função Lambda
