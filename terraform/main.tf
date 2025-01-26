@@ -23,7 +23,7 @@ resource "aws_lambda_function" "api_lambda" {
 
 # IAM Role para a Lambda
 resource "aws_iam_role" "lambda_exec" {
-  name = "lambda_exec_role"
+  name = "lambda_exec_role_${random_id.role_suffix.hex}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
