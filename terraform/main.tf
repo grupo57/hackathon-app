@@ -1,8 +1,3 @@
-# S3 Bucket para armazenar o código da Lambda
-resource "aws_s3_bucket" "lambda_deploy" {
-  bucket = var.s3_bucket_name
-}
-
 # Função Lambda
 resource "aws_lambda_function" "api_lambda" {
   function_name = var.lambda_function_name
@@ -10,7 +5,7 @@ resource "aws_lambda_function" "api_lambda" {
   handler       = "com.example.Handler::handleRequest"
   runtime       = "java11"
 
-  s3_bucket        = aws_s3_bucket.lambda_deploy.id
+  s3_bucket        = var.s3_bucket_name
   s3_key           = "lambda-function.jar"
   source_code_hash = filebase64sha256("../target/lambda-function.jar")
 
