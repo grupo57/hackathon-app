@@ -24,9 +24,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/**").permitAll() // URLs que não requerem autenticação
                         .requestMatchers("/login/**").permitAll() // URLs que não requerem autenticação
-                        .requestMatchers("/read/**").permitAll() // URLs que não requerem autenticação
-                        .requestMatchers("/download/**").permitAll() // URLs que não requerem autenticação
                         .anyRequest().authenticated() // Qualquer outra requisição requer autenticação
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
