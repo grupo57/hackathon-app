@@ -11,8 +11,13 @@ public class LambdaHandler implements RequestHandler<AwsProxyRequest, AwsProxyRe
     private static final SpringBootLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> handler;
 
     static {
-        // Inicializa o handler com a classe principal do Spring Boot
-        handler = SpringBootLambdaContainerHandler.getAwsProxyHandler(ProcessadorDeVideosApplication.class);
+        try {
+            // Inicializa o handler com a classe principal do Spring Boot
+            handler = SpringBootLambdaContainerHandler.getAwsProxyHandler(ProcessadorDeVideosApplication.class);
+        } catch (ContainerInitializationException e) {
+            // Lidar com o erro de inicialização do container
+            throw new RuntimeException("Erro ao inicializar o handler do Spring Boot", e);
+        }
     }
 
     @Override
