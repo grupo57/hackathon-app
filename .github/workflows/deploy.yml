@@ -1,0 +1,61 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout do código
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Configuração do Java
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # Build do JAR
+      - name: Build Lambda Function
+        run: mvn clean package
+
+      # Configuração do AWS CLI
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      # Upload do JAR para o S3
+      - name: Upload Lambda JAR to S3
+        run: |
+          aws s3 cp target/lambda-function.jar s3://${{ secrets.S3_BUCKET_NAME }}/lambda-function.jar
+
+      # Configuração do Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
+
+      # Inicializar Terraform
+      - name: Initialize Terraform
+        run: terraform -chdir=terraform init
+
+      # Validar Terraform
+      - name: Validate Terraform
+        run: terraform -chdir=terraform validate
+
+      # Plan Terraform
+      - name: Plan Terraform
+        run: terraform -chdir=terraform plan -out=tfplan
+
+      # Apply Terraform
+      - name: Apply Terraform
+        run: terraform -chdir=terraform apply -auto-approve tfplan
