@@ -33,3 +33,6 @@ build/
 .vscode/
 /src/main/resources/application-local.yml
 /uploads7de8.mkv
+
+.terraform
+.terraform.lock.hcl
