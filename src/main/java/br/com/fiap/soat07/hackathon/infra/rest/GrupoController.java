@@ -9,16 +9,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "root", description = "root")
+@Tag(name = "info", description = "informações")
 @RestController
 @RequestMapping
-public class RootController {
+public class GrupoController {
 
-    public RootController() {
+    public GrupoController() {
     }
 
 
@@ -26,8 +25,8 @@ public class RootController {
             @ApiResponse(responseCode = "200", description = "Sistema online", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Grupo57DTO.class)) }),
     })
-    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public ResponseEntity<?> root() {
+    @GetMapping(value = "/grupo", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public ResponseEntity<?> grupo() {
         return ResponseEntity.status(200).body(new Grupo57DTO());
     }
 
