@@ -24,8 +24,18 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/**").permitAll() // URLs que não requerem autenticação
-                        .requestMatchers("/login/**").permitAll() // URLs que não requerem autenticação
+                        // URLs que não requerem autenticação
+                        .requestMatchers(
+                                "/swagger-ui/**",        // Permitir Swagger UI
+                                "/swagger-ui.html",      // Permitir Swagger UI clássico (se necessário)
+                                "/v3/**",                // Permitir o acesso aos docs da API
+                                "/v3/api-docs/**",       // Permitir o acesso aos docs da API
+                                "/webjars/**",           // Permitir acesso aos recursos estáticos do Swagger (como CSS e JS)
+                                "/login",                // URLs de login também sem autenticação
+                                "/login/**",             // URLs de login também sem autenticação
+                                "/",                     // URL com informações da aplicação
+                                "/grupo/**"              // URLs de informações do grupo também sem autenticação
+                        ).permitAll()
                         .anyRequest().authenticated() // Qualquer outra requisição requer autenticação
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

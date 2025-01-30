@@ -42,7 +42,7 @@ spring:
     secret: FeKw08M4keuw8e9gnsQZQgwg4yDOlMZfvIwzEkSOsiU=
     issuer: grupo-57
     audience: fiap
-    expiration-time: 36000
+    expiration-time: 360000
     allowed-clock-skew: 30
 
 cloud:
@@ -58,7 +58,8 @@ cloud:
       bucket-download-name: fiap-grupo57-hackathon-zip
     sqs:
       region: us-east-1
-      queue-name: hackathon-video-processado
+      video-processado-queue-name: hackathon-video-processado
+      video-erro-queue-name: hackathon-video-erro
 
 info:
   group-id: "br.com.fiap.soat07.hackathon"
