@@ -23,7 +23,7 @@ class UploadRequest extends FormRequest
     {
         return [
             'file.required' => 'Por favor, informe o arquivo a ser enviado',
-            'file.file'     => 'O arquivo enviado precisa ser MP4, AVI ou MOV',
+            'file.mimetypes'     => 'O arquivo enviado precisa ser MP4, AVI ou MOV',
         ];
     }
 
@@ -38,7 +38,7 @@ class UploadRequest extends FormRequest
             return [];
 
         return [
-            'file' => ['required', 'file:mp4,avi,mov'],
+            'file' => ['required', 'file', 'mimetypes:video/mp4,video/x-msvideo,video/quicktime'],
         ];
     }
 }
