@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core\Domain\Entity;
+namespace App\Core\Domain\Entities;
 
 class FileType {
 

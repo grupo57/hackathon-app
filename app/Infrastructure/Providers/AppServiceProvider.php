@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Infra\Providers;
+namespace App\Infrastructure\Providers;
 
+use App\Core\Domain\Repositories\VideoRepositoryInterface;
+use App\Infrastructure\Persistence\VideoRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(VideoRepositoryInterface::class, VideoRepository::class);
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 
-use App\Infra\Controllers\AuthController;
-use App\Infra\Controllers\UploadController;
+use App\Infrastructure\Controllers\AuthController;
+use App\Infrastructure\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('register', [AuthController::class, 'register']);

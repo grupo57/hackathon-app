@@ -55,8 +55,6 @@ build:
 	${MAKE} stop
 	U_ID=${UID} HOST=${NAMESERVER_IP} docker-compose build
 	${MAKE} composer-install
-	${MAKE} run
-	${MAKE} pos-build
 
 remove-lock-file:
 	$(info ${Y} Remove composer.lock ${R})

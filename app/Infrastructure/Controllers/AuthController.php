@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Infra\Controllers;
+namespace App\Infrastructure\Controllers;
 
-use App\Infra\Models\User;
-use App\Infra\Requests\AuthRequest;
+use App\Infrastructure\Models\User;
+use App\Infrastructure\Requests\AuthRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
