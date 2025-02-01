@@ -27,7 +27,7 @@ public enum SituacaoDoArquivo {
 
     public static Optional<SituacaoDoArquivo> parse(String valor) {
         if (valor == null || valor.isEmpty())
-            Optional.empty();
+            return Optional.empty();
         return Optional.ofNullable(of(valor));
     }
 
