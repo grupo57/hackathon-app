@@ -18,3 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
+
+    if (getenv('BREF_HANDLER')) {
+        return require __DIR__ . '/../vendor/bref/laravel-fpm/runtime.php';
+    }
