@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy AWS Lambda
 
 on:
   push:
@@ -7,151 +7,47 @@ on:
 
 jobs:
   deploy:
+    name: Deploy to AWS Lambda
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout do código
-      - name: Checkout code
+      - name: Checkout do código
         uses: actions/checkout@v3
 
-      # Configuração do Java
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          php-version: '8.2'
+          extensions: mbstring, intl, bcmath
+          ini-values: post_max_size=256M, upload_max_filesize=256M
+          coverage: none
 
-      - name: Generate application.xml from secrets
-        run: |
-          mkdir -p src/main/resources
-          cat > src/main/resources/application.xml <<EOF
-          spring:
-            main:
-              allow-bean-definition-overriding: true
-              banner-mode: console
-            application:
-              name: hackathon-video
-            sql:
-              init:
-                continue-on-error: true
-                platform: mysql
-                schema-locations: classpath:schema.sql
-                data-locations: classpath:data.sql
-                mode: always
-            data:
-              jpa:
-                repositories:
-                  enabled: true
-            jpa:
-              show-sql: true
-              hibernate:
-                ddl-auto: none
-              properties:
-                hibernate:
-                  default_schema: public
-            servlet:
-              multipart:
-                max-file-size: 100MB # Tamanho máximo de um único arquivo
-                max-request-size: 100MB # Tamanho máximo de toda a requisição
-            arquivo:
-              local:
-                root: c:/temp
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
+      - name: Cache Composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
 
-            datasource:
-              url: ${{ secrets.DB_HACKATON_APP_URL }}
-              username: ${{ secrets.DB_HACKATON_APP_USERNAME }}
-              password: ${{ secrets.DB_HACKATON_APP_PASSWORD }}
-              driverClassName: ${DATABASE_DRIVER_CLASS_NAME:com.mysql.cj.jdbc.Driver}
-              schema: classpath:schema.sql
+      - name: Install Composer dependencies
+        run: composer install --no-progress
 
-            jwt:
-              secret: FeKw08M4keuw8e9gnsQZQgwg4yDOlMZfvIwzEkSOsiU=
-              issuer: grupo-57
-              audience: fiap
-              expiration-time: 36000
-              allowed-clock-skew: 30
+      - name: Criar arquivo ZIP
+        run: zip -r laravel-api.zip . -x '*.git*' '.github/*'
 
-          cloud:
-            aws:
-              region:
-                static: us-east-1
-              credentials:
-                access-key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                secret-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-              s3:
-                region: us-east-1
-                bucket-upload-name: fiap-grupo57-hackathon
-                bucket-download-name: fiap-grupo57-hackathon-zip
-              sqs:
-                region: us-east-1
-                queue-name: hackathon-video-processado
-
-          info:
-            group-id: "br.com.fiap.soat07.hackathon"
-            artifact-id: "video-api"
-            version: "1.0.0"
-            java.version: "17.x"
-
-          server:
-            port: 8080
-            max-http-request-header-size: 24KB
-            servlet:
-              context-path: /video
-            tomcat:
-              max-http-response-header-size: 24KB
-
-
-          logging:
-            group:
-              web: org.springframework.web, org.springframework.core.codec, org.springframework.http,
-              spring: org.springframework.core.env
-              servlet: org.springframework.boot.web, org.apache.coyote, org.apache.catalina, org.apache.tomcat
-              data:  org.springframework.jdbc.core,  org.springframework.orm.jpa, org.hibernate
-              app: br.com.fiap.soat07.hackathon
-            level:
-              web: ${LOGGING_LEVEL_WEB:INFO}
-              spring: ${LOGGING_LEVEL_SPRING:INFO}
-              servlet: ${LOGGING_LEVEL_SERVLET:INFO}
-              data: ${LOGGING_LEVEL_DATA:INFO}
-              app: ${LOGGING_LEVEL_APP:INFO}
-          EOF
-
-      # Build do JAR
-      - name: Build Lambda Function
-        run: mvn clean package
-
-      # Configuração do AWS CLI
-      - name: Configure AWS credentials
+      - name: Configurar AWS Credenciais
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      # Upload do JAR para o S3
-      - name: Upload Lambda JAR to S3
+      - name: Fazer upload do ZIP para Lambda
         run: |
-          aws s3 cp target/lambda-function.jar s3://${{ secrets.S3_BUCKET_NAME }}/lambda-function.jar
-
-      # Configuração do Terraform
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_wrapper: false
-
-      # Inicializar Terraform
-      - name: Initialize Terraform
-        run: terraform -chdir=terraform init
-
-      # Validar Terraform
-      - name: Validate Terraform
-        run: terraform -chdir=terraform validate
-
-      # Plan Terraform
-      - name: Plan Terraform
-        run: terraform -chdir=terraform plan -out=tfplan
-
-      # Apply Terraform
-      - name: Apply Terraform
-        run: terraform -chdir=terraform apply -auto-approve tfplan
+          aws lambda update-function-code \
+            --function-name ${{ secrets.LAMBDA_FUNCTION_NAME }} \
+            --zip-file fileb://laravel-api.zip
