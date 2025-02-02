@@ -1,1 +1,0 @@
-INSERT INTO usuario(id, nome, email, salt, senha, situacao, data_criacao, data_ultima_modificacao) VALUES (1, 'teste', 'teste@teste.com', 'vGrmIur/vHuhVP8kH+hRqQ==', 'NrU2Zoye4Lv2+1AeKjBD/AtcTnC95YeGN7fXBNavCsU=', 'ATIVO', current_timestamp(), current_timestamp());
