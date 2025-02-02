@@ -2,7 +2,7 @@
 
 Este projeto foi desenvolvido com o Framework Laravel na linguagem PHP e banco de dados Mysql.
 
-A porta 8080 é destinada a API RESTful, e a porta 3306 para o banco de dados.
+A porta 4005 é destinada a API RESTful, e a porta 3306 para o banco de dados.
 
 ### Objetivo do Projeto
 
