@@ -4,7 +4,9 @@ namespace App\Core\UseCase;
 
 use App\Core\Domain\Entities\Video;
 use App\Core\Domain\Repositories\VideoRepositoryInterface;
+use App\Core\Gateway\VideoGateway;
 use App\Infrastructure\Messaging\SQSService;
+use App\Infrastructure\Models\UploadModel;
 use App\Infrastructure\Storages\S3Storage;
 use Illuminate\Http\UploadedFile;
 
@@ -25,10 +27,11 @@ class UploadVideoUseCase
         $this->storage->upload($videoKey, $file);
 
         // Criar entidade do vídeo
-        $video = new Video(uniqid(), $file->getFilename(), $videoKey, $file->getSize(), $file->getClientOriginalExtension());
+        $video = new Video(rand(1111,9999), $file->getFilename(), $videoKey, $file->getSize(), $file->getClientOriginalExtension());
 
         // Salvar no banco de dados
-        $this->repository->save($video);
+        $videoModel = $this->repository->save($video);
+        $video->setId($videoModel->id);
 
         // Enviar mensagem para a fila SQS
         $this->sqsService->sendMessage([
@@ -39,5 +42,10 @@ class UploadVideoUseCase
         ]);
 
         return $video;
+    }
+
+    public function getById($uploadId)
+    {
+        return $this->repository->findById($uploadId);
     }
 }

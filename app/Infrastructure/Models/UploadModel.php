@@ -2,9 +2,10 @@
 
 namespace App\Infrastructure\Models;
 
+use App\Core\Gateway\VideoGateway;
 use Illuminate\Database\Eloquent\Model;
 
-class UploadModel extends Model
+class UploadModel extends Model implements VideoGateway
 {
     protected $table = 'uploads';
 

@@ -8,5 +8,6 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/upload', [UploadController::class, 'upload']);
+    Route::post('/uploads', [UploadController::class, 'upload']);
+    Route::get('/uploads/{uploadId}', [UploadController::class, 'getById']);
 });

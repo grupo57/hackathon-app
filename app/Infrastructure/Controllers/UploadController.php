@@ -19,4 +19,12 @@ class UploadController extends Controller
             )
         ]);
     }
+
+    public function getById(int $uploadId): JsonResponse
+    {
+        return response()->json([
+            'success' => true,
+            'files'   => $this->uploadVideoUseCase->getById($uploadId)
+        ]);
+    }
 }

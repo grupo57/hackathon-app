@@ -4,14 +4,15 @@ namespace App\Infrastructure\Persistence;
 
 use App\Core\Domain\Entities\Video;
 use App\Core\Domain\Repositories\VideoRepositoryInterface;
+use App\Core\Gateway\VideoGateway;
 use App\Infrastructure\Models\UploadModel;
 use Illuminate\Support\Facades\Auth;
 
 class VideoRepository implements VideoRepositoryInterface
 {
-    public function save(Video $video): void
+    public function save(Video $video): VideoGateway
     {
-        UploadModel::create([
+        return UploadModel::create([
             'user_id' => Auth::id(),
             'name' => $video->title,
             'path' => $video->path,
@@ -25,7 +26,7 @@ class VideoRepository implements VideoRepositoryInterface
     public function findById(string $id): ?Video
     {
         $video = UploadModel::find($id);
-        return $video ? new Video($video->id, $video->title, $video->path, $video->size, $video->format) : null;
+        return $video ? new Video($video->id, $video->name, $video->path, $video->size, $video->extension) : null;
     }
 
     public function delete(string $id): void

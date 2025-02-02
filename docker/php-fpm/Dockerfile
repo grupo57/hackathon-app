@@ -31,6 +31,8 @@ RUN apt-get update && apt-get install -y \
     zip \
     git \
     vim \
+    unzip \
+    supervisor \
     librabbitmq-dev
 
 # Common php-ext and requirements
@@ -41,24 +43,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends libpq-dev libz-
     && docker-php-ext-install iconv \
     && docker-php-ext-install pdo \
     && docker-php-ext-install bcmath
-
-#####################################
-# IMAP:
-#####################################
-
-RUN apt update && apt install -y libc-client-dev libkrb5-dev && rm -r /var/lib/apt/
-RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl
-RUN docker-php-ext-install imap
-RUN docker-php-ext-enable imap
-
-#####################################
-# SET TIMEZONE:
-#####################################
-
-ARG TIMEZONE
-RUN ln -snf /usr/share/zoneinfo/${TIMEZONE}/etc/localtime && echo ${TIMEZONE} > /etc/timezone \
-    && printf '[PHP]\ndate.timezone = "%s"\n', ${TIMEZONE} > /usr/local/etc/php/conf.d/tzone.ini \
-    && "date"
 
 #####################################
 # GD:
@@ -103,15 +87,6 @@ RUN if [ ${INSTALL_MBSTRING} = true ]; then \
     # Install mbstring
     docker-php-ext-install mbstring \
     ;fi
-
-#####################################
-# IMAP:
-#####################################
-
-RUN apt update && apt install -y libc-client-dev libkrb5-dev && rm -r /var/lib/apt/
-RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl
-RUN docker-php-ext-install imap
-RUN docker-php-ext-enable imap
 
 ARG PHP_FPM_INSTALL_IMAP=false
 RUN if [ ${PHP_FPM_INSTALL_IMAP} = true ]; then \
@@ -241,6 +216,12 @@ RUN if [ ${INSTALL_AMQP} = true ]; then \
 COPY ./php.ini /usr/local/etc/php/php.ini
 COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
+# Criar diretório de logs para o supervisor
+RUN mkdir -p /var/log/supervisor
+
+# Copiar a configuração do supervisor
+COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
+
 # Permissions
 RUN chown -R appuser:appuser /var/www/html
 RUN chmod u+rwx,g+rx,o+rx /var/www/html
@@ -248,8 +229,10 @@ RUN chmod u+rwx,g+rx,o+rx /var/www/html
 RUN find /var/www/html -type d -exec chmod u+rwx,g+rx,o+rx {} +
 RUN find /var/www/html -type f -exec chmod u+rw,g+rw,o+r {} +
 
-USER appuser
+RUN mkdir -p /var/run/supervisor /var/log/supervisor
+RUN chmod -R 777 /var/run/supervisor /var/log/supervisor
 
-CMD ["php-fpm"]
+# Comando padrão ao iniciar o container
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisor.conf"]
 
 EXPOSE 9000
