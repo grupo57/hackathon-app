@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Infrastructure\Jobs;
 
 use App\Infrastructure\Models\UploadModel;
 use Illuminate\Bus\Queueable;
@@ -15,7 +15,7 @@ class ProcessCompletedVideo implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $queue = 'sqs_completed'; // Define a fila específica
+    public $queue = 'sqs_completed';
 
     protected $message;
 
