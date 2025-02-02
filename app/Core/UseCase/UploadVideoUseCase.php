@@ -44,8 +44,13 @@ class UploadVideoUseCase
         return $video;
     }
 
-    public function getById($uploadId)
+    public function getById($uploadId): Video
     {
         return $this->repository->findById($uploadId);
+    }
+
+    public function getAll(int $userId)
+    {
+        return $this->repository->findAll($userId);
     }
 }

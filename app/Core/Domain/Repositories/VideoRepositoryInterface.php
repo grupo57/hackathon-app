@@ -10,4 +10,5 @@ interface VideoRepositoryInterface
     public function save(Video $video): VideoGateway;
     public function findById(string $id): ?Video;
     public function delete(string $id): void;
+    public function findAll(int $userId): array;
 }

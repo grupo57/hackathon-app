@@ -33,4 +33,11 @@ class VideoRepository implements VideoRepositoryInterface
     {
         UploadModel::destroy($id);
     }
+
+    public function findAll(int $userId): array
+    {
+        return UploadModel::where('user_id', $userId)->get()->map(function ($video) {
+            return new Video($video->id, $video->name, $video->path, $video->size, $video->extension);
+        })->toArray();
+    }
 }

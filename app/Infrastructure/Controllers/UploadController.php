@@ -5,6 +5,7 @@ namespace App\Infrastructure\Controllers;
 use App\Core\UseCase\UploadVideoUseCase;
 use App\Infrastructure\Requests\UploadRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class UploadController extends Controller
 {
@@ -25,6 +26,16 @@ class UploadController extends Controller
         return response()->json([
             'success' => true,
             'files'   => $this->uploadVideoUseCase->getById($uploadId)
+        ]);
+    }
+
+    public function index(): JsonResponse
+    {
+        $userId = Auth::id();
+
+        return response()->json([
+            'success' => true,
+            'files'   => $this->uploadVideoUseCase->getAll($userId)
         ]);
     }
 }
