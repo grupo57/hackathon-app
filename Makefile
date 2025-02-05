@@ -144,3 +144,7 @@ sonar-analyse:
 logs:
 	$(info ${Y} Show containers logs ${R})
 	docker-compose logs $(filter-out $@,$(MAKECMDGOALS)) --tail="100"
+
+run-queue:
+	$(info ${Y} Running queue ${R})
+	U_ID=${UID} docker-compose run --rm --user ${UID} php ./artisan queue:work sqs_completed --verbose --tries=3

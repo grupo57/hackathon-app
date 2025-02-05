@@ -27,3 +27,20 @@
 2025-02-02 22:01:59,060 INFO stopped: laravel-worker_00 (exit status 0)
 2025-02-02 22:02:00,065 INFO spawned: 'laravel-worker_00' with pid 29
 2025-02-02 22:02:01,067 INFO success: laravel-worker_00 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-05 00:11:25,638 INFO Set uid to user 0 succeeded
+2025-02-05 00:11:25,645 INFO RPC interface 'supervisor' initialized
+2025-02-05 00:11:25,645 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2025-02-05 00:11:25,646 INFO supervisord started with pid 1
+2025-02-05 00:11:26,648 INFO spawned: 'laravel-worker_00' with pid 7
+2025-02-05 00:11:27,650 INFO success: laravel-worker_00 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-05 00:19:22,409 WARN received SIGQUIT indicating exit request
+2025-02-05 00:19:22,409 INFO waiting for laravel-worker_00 to die
+2025-02-05 00:19:22,424 INFO stopped: laravel-worker_00 (exit status 0)
+2025-02-05 00:19:36,269 INFO Set uid to user 0 succeeded
+2025-02-05 00:19:36,272 INFO RPC interface 'supervisor' initialized
+2025-02-05 00:19:36,273 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2025-02-05 00:19:36,273 INFO supervisord started with pid 1
+2025-02-05 00:19:37,274 INFO spawned: 'laravel-worker_00' with pid 7
+2025-02-05 00:19:37,276 INFO spawned: 'php-fpm' with pid 8
+2025-02-05 00:19:38,338 INFO success: laravel-worker_00 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-02-05 00:19:38,338 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)

@@ -26,7 +26,15 @@ class VideoRepository implements VideoRepositoryInterface
     public function findById(string $id): ?Video
     {
         $video = UploadModel::find($id);
-        return $video ? new Video($video->id, $video->name, $video->path, $video->size, $video->extension) : null;
+        return $video ? new Video(
+            $video->id, 
+            $video->name, 
+            $video->path, 
+            $video->size, 
+            $video->extension, 
+            $video->status, 
+            $video->url
+        ) : null;
     }
 
     public function delete(string $id): void
@@ -36,8 +44,18 @@ class VideoRepository implements VideoRepositoryInterface
 
     public function findAll(int $userId): array
     {
-        return UploadModel::where('user_id', $userId)->get()->map(function ($video) {
-            return new Video($video->id, $video->name, $video->path, $video->size, $video->extension);
-        })->toArray();
+        return UploadModel::where('user_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->get()->map(function ($video) {
+                return new Video(
+                    $video->id, 
+                    $video->name, 
+                    $video->path, 
+                    $video->size, 
+                    $video->extension, 
+                    $video->status, 
+                    $video->url
+                );
+            })->toArray();
     }
 }
