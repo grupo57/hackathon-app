@@ -11,6 +11,7 @@ class Video
         public readonly int $size,
         public readonly string $format,
         public string $status = 'pending',
+        public ?string $zipUrl = '',
     ) {}
 
     public function setId(int $id): void

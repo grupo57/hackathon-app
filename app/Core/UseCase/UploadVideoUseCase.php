@@ -4,9 +4,7 @@ namespace App\Core\UseCase;
 
 use App\Core\Domain\Entities\Video;
 use App\Core\Domain\Repositories\VideoRepositoryInterface;
-use App\Core\Gateway\VideoGateway;
 use App\Infrastructure\Messaging\SQSService;
-use App\Infrastructure\Models\UploadModel;
 use App\Infrastructure\Storages\S3Storage;
 use Illuminate\Http\UploadedFile;
 
@@ -36,6 +34,7 @@ class UploadVideoUseCase
         // Enviar mensagem para a fila SQS
         $this->sqsService->sendMessage([
             'videoKey' => $videoKey,
+            'videoId' => $videoModel->id,
             'interval' => (int) request()->get('interval'),
             'bucketNameDownload' => env('AWS_BUCKET_DOWNLOAD'),
             'bucketNameUpload' => env('AWS_BUCKET_UPLOAD')
