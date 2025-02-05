@@ -11,56 +11,6 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-
-/**
- * @OA\PathItem(
- *     path="/api/register"
- * )
- * @OA\Post(
- *     path="/api/register",
- *     summary="Registrar",
- *     tags={"Auth"},
- *     @OA\RequestBody(
- *         required=true,
- *         @OA\JsonContent(
- *             required={"name","email","password"},
- *             @OA\Property(property="name", type="string", example="Hackathon Teste"),
- *             @OA\Property(property="email", type="string", example="teste@teste.com.br"),
- *             @OA\Property(property="password", type="string", example="123456")
- *         ),
- *     ),
- *     @OA\Response(
- *         response=201,
- *         description="Registro bem-sucedido",
- *         @OA\JsonContent(
- *             type="object",
- *             example={
- *                 "token": "token_de_autenticacao_aqui",
- *                 "user": {
- *                     "id": 1,
- *                     "name": "Hackathon Teste",
- *                     "email": "teste@teste.com.br"
- *                 }
- *             },
- *             @OA\Property(property="token", type="string"),
- *             @OA\Property(
- *                 property="user",
- *                 type="object",
- *                 @OA\Property(property="id", type="integer"),
- *                 @OA\Property(property="name", type="string"),
- *                 @OA\Property(property="email", type="string")
- *             )
- *         )
- *     ),
- *     @OA\Response(
- *         response=400,
- *         description="Dados inválidos"
- *     ),
- *     security={{ "bearerAuth": {} }}
- * )
- */
-
-
     public function register(AuthRequest $request)
     {
         $password = $request->password;
@@ -87,46 +37,6 @@ class AuthController extends Controller
             'token_type'   => 'Bearer',
         ]);
     }
-
-/**
- * @OA\PathItem(
- *     path="/api/login"
- * )
- * @OA\Post(
- *     path="/api/login",
- *     summary="Login",
- *     tags={"Auth"},
- *     @OA\RequestBody(
- *         required=true,
- *         @OA\JsonContent(
- *             required={"email","password"},
- *             @OA\Property(property="email", type="string", example="teste@teste.com.br"),
- *             @OA\Property(property="password", type="string", example="123456")
- *         ),
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="Login bem-sucedido",
- *         @OA\JsonContent(
- *             type="object",
- *             example={
- *                 "success": true,
- *                 "access_token": "15|yIWAhxDmfOXBaW1vd5ejRpKLo0dT6LNKjkvVkfJS2174c003",
- *                 "token_type": "Bearer"
- *             },
- *             @OA\Property(property="success", type="boolean"),
- *             @OA\Property(property="access_token", type="string"),
- *             @OA\Property(property="token_type", type="string")
- *         )
- *     ),
- *     @OA\Response(
- *         response=401,
- *         description="Credenciais inválidas"
- *     ),
- *     security={{ "bearerAuth": {} }}
- * )
- */
-
 
     public function login(Request $request): JsonResponse
     {
