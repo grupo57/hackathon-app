@@ -31,16 +31,28 @@ class UploadVideoUseCase
         $videoModel = $this->repository->save($video);
         $video->setId($videoModel->id);
 
+        // Enviar para a fila
+        $this->sendToQueue($videoKey, $videoModel);
+
+        return $video;
+    }
+
+    private function sendToQueue($videoKey, $videoModel)
+    {
+        if (class_exists('request')) {
+            $interval = request('interval') ?? 10;
+        } else {
+            $interval = 10;
+        }
+
         // Enviar mensagem para a fila SQS
         $this->sqsService->sendMessage([
             'videoKey' => $videoKey,
             'videoId' => $videoModel->id,
-            'interval' => (int) request()->get('interval'),
+            'interval' => (int) $interval,
             'bucketNameDownload' => env('AWS_BUCKET_DOWNLOAD'),
             'bucketNameUpload' => env('AWS_BUCKET_UPLOAD')
         ]);
-
-        return $video;
     }
 
     public function getById($uploadId): Video

@@ -91,7 +91,7 @@ bash-root:
 
 test:
 	$(info ${Y} Executing tests ${R})
-	U_ID=${UID} docker-compose run --rm --user ${UID} php artisan test $(filter-out $@,$(MAKECMDGOALS)) --testdox
+	U_ID=${UID} docker-compose run --rm --user ${UID} php ./artisan test $(filter-out $@,$(MAKECMDGOALS)) --testdox
 
 test-class:
 	$(info ${Y} Executing tests in Unique class ${R})
@@ -121,7 +121,7 @@ coverage-show-report:
 coverage:
 	$(info ${Y} Generate Coverage Report in HTML ${R})
 	U_ID=${UID} docker-compose run --rm --user ${UID} php \
-		./vendor/bin/simple-phpunit --whitelist ./src/ \
+		./artisan test ./tests/ \
 		--coverage-html ${COVERAGE_FOLDER} \
 		--coverage-clover ${COVERAGE_FOLDER}/clover.xml \
 		--log-junit ${COVERAGE_FOLDER}/junit.xml  --testdox
