@@ -20,6 +20,7 @@ class VideoRepository implements VideoRepositoryInterface
             'type' => $video->format,
             'extension' => $video->format,
             'mime_type' => $video->format,
+            'url' => $video->zipUrl,
         ]);
     }
 
