@@ -11,10 +11,6 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    /**
-     * @param Request $request
-     * @return JsonResponse|void
-     */
     public function register(AuthRequest $request)
     {
         $password = $request->password;
@@ -42,10 +38,6 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
     public function login(Request $request): JsonResponse
     {
         if (!Auth::attempt($request->only('email', 'password'))) {

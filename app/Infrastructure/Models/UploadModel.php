@@ -3,10 +3,13 @@
 namespace App\Infrastructure\Models;
 
 use App\Core\Gateway\VideoGateway;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class UploadModel extends Model implements VideoGateway
 {
+    use HasFactory;
+    
     protected $table = 'uploads';
 
     protected $fillable = [

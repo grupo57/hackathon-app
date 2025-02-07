@@ -9,8 +9,10 @@ use Illuminate\Support\Facades\Auth;
 
 class UploadController extends Controller
 {
-    public function __construct(private readonly UploadVideoUseCase $uploadVideoUseCase) {}
+    use AnnotationTrait;
     
+    public function __construct(private readonly UploadVideoUseCase $uploadVideoUseCase) {}
+
     public function upload(UploadRequest $request): JsonResponse
     {
         return response()->json([
