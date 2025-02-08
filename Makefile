@@ -110,6 +110,11 @@ install-authentication:
 	$(info ${Y} Running migrate Sanctum ${R})
 	U_ID=${UID} docker-compose run --rm --user ${UID} php ./artisan execute migrate
 
+migrate:
+
+	$(info ${Y} Running migrate ${R})
+	U_ID=${UID} docker-compose run --rm --user ${UID} php ./artisan execute migrate
+
 insights:
 	$(info ${Y} Check code quality using phpinsights ${R})
 	U_ID=${UID} docker-compose run --rm --user ${UID} php ./vendor/bin/phpinsights --flush-cache -v
