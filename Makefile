@@ -36,7 +36,7 @@ up:
 	${MAKE} stop
 	U_ID=${UID} HOST=${NAMESERVER_IP} docker-compose up -d
 	${MAKE} composer-install
-	${MAKE} generate-key
+	${MAKE} key-generate
 	${MAKE} logs
 
 restart:
