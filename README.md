@@ -12,9 +12,7 @@ Este projeto é um microsserviço responsável por extrair frames de vídeos env
 
 ### Video de Apresentação
 
-<a href="https://youtu.be/dQ0HfnJHjFc?si=fzePXUXRKCnIfYA_"><img src=".doc/thumbnail-hackathon.jpg" width="600"></a>
-
-Caso tenha problemas para visualizar o vídeo <a href="https://youtu.be/dQ0HfnJHjFc?si=fzePXUXRKCnIfYA_  ">CLIQUE AQUI</a>
+Para visualizar o vídeo de apresentação <a href="https://youtu.be/dQ0HfnJHjFc?si=fzePXUXRKCnIfYA_  ">CLIQUE AQUI</a>
 
 ### Subindo o ambiente
 
