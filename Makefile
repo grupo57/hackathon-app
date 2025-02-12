@@ -35,6 +35,8 @@ up:
 	$(info ${Y} Running containers in docker-compose ${R})
 	${MAKE} stop
 	U_ID=${UID} HOST=${NAMESERVER_IP} docker-compose up -d
+	${MAKE} composer-install
+	${MAKE} generate-key
 	${MAKE} logs
 
 restart:
@@ -108,6 +110,10 @@ install-authentication:
 	$(info ${Y} Running publish Sanctum Provider ${R})
 	U_ID=${UID} docker-compose run --rm --user ${UID} php ./artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
 	$(info ${Y} Running migrate Sanctum ${R})
+	U_ID=${UID} docker-compose run --rm --user ${UID} php ./artisan execute migrate
+
+migrate:
+	$(info ${Y} Running migrate ${R})
 	U_ID=${UID} docker-compose run --rm --user ${UID} php ./artisan execute migrate
 
 insights:
